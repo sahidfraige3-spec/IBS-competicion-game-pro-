@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Ranking Deportivo Escolar — PRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --gold:#ffb700; --green:#00ff88; --blue:#00aaff; --pink:#ff4488;
+    --bg:#04080f; --bg2:#080f18; --bg3:#0a1520;
+    --border:#0d1e30; --border2:#1a2a40; --text:#e8f0ff; --muted:#445566;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;}
+  button{font-family:'Rajdhani',sans-serif;cursor:pointer;}
+  input{font-family:'Rajdhani',sans-serif;}
+
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes fade-up{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+  @keyframes slide-in{from{transform:translateX(50px);opacity:0}to{transform:translateX(0);opacity:1}}
+  @keyframes shimmer{0%{background-position:-300% center}100%{background-position:300% center}}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+  @keyframes pulse-gold{0%,100%{box-shadow:0 0 8px var(--gold),0 0 25px #ffb70030}50%{box-shadow:0 0 22px var(--gold),0 0 50px #ffb70050}}
+  @keyframes vip-glow{0%,100%{text-shadow:0 0 8px var(--gold),0 0 20px #ffb70088}50%{text-shadow:0 0 16px var(--gold),0 0 40px #ffb700aa}}
+  @keyframes confetti-fall{0%{transform:translateY(-30px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+  @keyframes level-up-anim{0%{transform:scale(0) rotate(-12deg);opacity:0}55%{transform:scale(1.25) rotate(4deg);opacity:1}80%{transform:scale(0.95)}100%{transform:scale(1);opacity:1}}
+  @keyframes crown-bounce{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes toast-in{from{transform:translateX(-50%) translateY(-20px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+  @keyframes streak{from{left:-60%}to{left:120%}}
+  @keyframes top-line{0%,100%{opacity:.6}50%{opacity:1}}
+
+  .screen{position:fixed;inset:0;display:none;flex-direction:column;overflow:hidden;}
+  .screen.active{display:flex;}
+
+  .grid-bg{position:absolute;inset:0;pointer-events:none;
+    background-image:linear-gradient(#091520 1px,transparent 1px),linear-gradient(90deg,#091520 1px,transparent 1px);
+    background-size:40px 40px;opacity:.5;}
+  .orb{position:absolute;border-radius:50%;pointer-events:none;}
+
+  /* ── HOME ── */
+  #screen-home{align-items:center;justify-content:center;text-align:center;padding:24px;background:var(--bg);}
+  .home-crown{font-size:32px;animation:crown-bounce 2s ease-in-out infinite;margin-bottom:4px;}
+  .home-edition{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:6px;color:var(--gold);animation:vip-glow 2s ease-in-out infinite;}
+  .home-logo{font-size:68px;animation:float 3s ease-in-out infinite;margin-bottom:8px;}
+  .home-title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:34px;
+    background:linear-gradient(90deg,var(--gold),var(--green),var(--blue),var(--gold));
+    background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    animation:shimmer 4s linear infinite;line-height:1.1;margin-bottom:4px;}
+  .home-name{font-family:'Orbitron',sans-serif;font-weight:900;font-size:17px;color:var(--text);letter-spacing:3px;margin-bottom:8px;}
+  .pro-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 18px;
+    background:linear-gradient(135deg,#1a0f00,#0a1500);border:1px solid #ffb70066;border-radius:20px;margin-bottom:36px;
+    animation:pulse-gold 2s ease-in-out infinite;}
+  .pro-badge span{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--gold);letter-spacing:2px;}
+  .btn-enter-pro{display:inline-block;font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;
+    padding:18px 60px;background:linear-gradient(135deg,var(--gold),#ff9f00);
+    border:none;color:var(--bg);border-radius:50px;letter-spacing:2px;box-shadow:0 4px 30px #ffb70055;}
+  .btn-enter-pro:hover{transform:translateY(-1px);box-shadow:0 6px 40px #ffb70070;}
+  .pro-features{margin:30px auto 0;padding:20px;background:var(--bg2);border:1px solid #ffb70022;border-radius:14px;max-width:300px;text-align:left;}
+  .pro-feat-title{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--gold);letter-spacing:2px;margin-bottom:12px;}
+  .pfeat{display:flex;gap:8px;align-items:center;margin-bottom:7px;font-size:13px;color:#99b;}
+
+  /* ── REGISTER ── */
+  #screen-register{background:var(--bg);overflow-y:auto;}
+  .reg-wrap{width:100%;max-width:400px;padding:24px;animation:fade-up 0.5s ease-out;}
+  .reg-title-pro{font-family:'Orbitron',sans-serif;font-weight:900;font-size:22px;color:var(--gold);animation:vip-glow 2s infinite;}
+  .reg-sub{font-size:13px;color:#334;margin-bottom:28px;}
+  .field-label-gold{display:block;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:8px;}
+  .field-input{width:100%;padding:13px 16px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:16px;margin-bottom:20px;outline:none;transition:border-color 0.3s;}
+  .field-input:focus{border-color:var(--gold);}
+  .avatar-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+  .avatar-opt{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;background:var(--bg2);border:2px solid var(--border2);transition:all 0.2s;}
+  .avatar-opt.selected{border-color:var(--gold);background:#1a1000;box-shadow:0 0 15px #ffb70030;}
+  .color-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+  .color-opt{width:32px;height:32px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all 0.2s;}
+  .color-opt.selected{border-color:white;}
+  .sport-card-pro{padding:14px 18px;margin-bottom:10px;border-radius:12px;cursor:pointer;background:var(--bg2);border:2px solid var(--border2);display:flex;align-items:center;gap:14px;transition:all 0.2s;}
+  .sport-card-pro.selected{background:#1a0f00;border-color:var(--gold);box-shadow:0 0 20px #ffb70022;}
+  .sport-card-pro .sport-name{font-weight:700;font-size:16px;transition:color 0.2s;}
+  .sport-card-pro.selected .sport-name{color:var(--gold);}
+  .sport-card-pro .check{margin-left:auto;color:var(--gold);display:none;}
+  .sport-card-pro.selected .check{display:block;}
+  .preview-card{padding:12px 16px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;margin-top:4px;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+  .btn-row{display:flex;gap:10px;margin-top:4px;}
+  .btn-back{flex:1;padding:13px;background:transparent;border:1px solid var(--border2);border-radius:10px;color:#334;font-family:'Orbitron',sans-serif;font-size:10px;}
+  .btn-pro-start{flex:2;padding:13px;background:linear-gradient(135deg,var(--gold),#ff9f00);border:none;border-radius:10px;color:var(--bg);font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;}
+
+  /* ── MAIN ── */
+  #screen-main{background:var(--bg);}
+  .main-header-pro{padding:12px 18px;background:var(--bg2);border-bottom:2px solid transparent;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;overflow:hidden;}
+  .header-top-line{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--blue),var(--gold),transparent);animation:top-line 2s ease-in-out infinite;}
+  .hdr-user{display:flex;align-items:center;gap:10px;}
+  .hdr-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .hdr-name-pro{font-family:'Orbitron',sans-serif;font-weight:900;font-size:13px;}
+  .hdr-edition{font-size:9px;color:#334;letter-spacing:1px;}
+  .vip-tag{font-size:9px;background:#ffb70022;border:1px solid #ffb70044;border-radius:3px;padding:1px 5px;color:var(--gold);font-family:'Orbitron',sans-serif;animation:vip-glow 2s infinite;margin-left:5px;}
+  .hdr-pts{text-align:right;}
+  .hdr-pts-num{font-family:'Orbitron',sans-serif;font-weight:700;font-size:18px;}
+  .hdr-pts-level{font-size:9px;letter-spacing:1px;}
+
+  .main-content{flex:1;overflow-y:auto;padding:16px;}
+
+  .main-nav-pro{display:flex;background:var(--bg2);border-top:2px solid transparent;flex-shrink:0;padding:7px 0 env(safe-area-inset-bottom,9px);position:relative;}
+  .nav-top-line{position:absolute;top:0;left:0;right:0;height:1px;}
+  .nav-btn-pro{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;padding:7px 0;}
+  .nav-btn-pro .nav-icon{font-size:20px;}
+  .nav-btn-pro .nav-label{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:1px;color:#223;}
+  .nav-btn-pro.active .nav-label{color:var(--gold);}
+  .nav-btn-pro .nav-bar{width:18px;height:2px;border-radius:1px;display:none;}
+  .nav-btn-pro.active .nav-bar{display:block;}
+
+  .tab{display:none;animation:fade-up 0.4s ease-out;}
+  .tab.active{display:block;}
+
+  /* ── RANKING PRO ── */
+  .ranking-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .ranking-title{font-family:'Orbitron',sans-serif;font-weight:700;font-size:17px;}
+  .live-badge-gold{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--gold);font-family:'Orbitron',sans-serif;animation:vip-glow 2s infinite;}
+  .live-dot-gold{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:blink 1s infinite;}
+  .my-pos-card-pro{padding:12px 15px;border-radius:10px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+  .my-pos-num{font-family:'Orbitron',sans-serif;font-weight:900;font-size:20px;width:32px;text-align:center;}
+  .my-mini-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .rank-item{display:flex;align-items:center;gap:10px;padding:11px 14px;margin-bottom:7px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);}
+  .rank-item.is-me{background:#1a0f0022;}
+  .rank-pos{width:24px;text-align:center;font-family:'Orbitron',sans-serif;font-weight:700;font-size:11px;color:#445;}
+  .rank-pos.medal{font-size:16px;}
+  .rank-info{flex:1;}
+  .rank-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;}
+  .rank-level{font-size:9px;}
+  .rank-pts{font-family:'Orbitron',sans-serif;font-weight:700;font-size:12px;}
+  .vip-badge{font-size:8px;background:#ffb70022;border:1px solid #ffb70044;border-radius:3px;padding:1px 4px;color:var(--gold);font-family:'Orbitron',sans-serif;margin-left:5px;}
+  .ranking-footer{text-align:center;margin-top:14px;font-size:9px;color:#223;font-family:'Orbitron',sans-serif;letter-spacing:1px;}
+  .empty-ranking{text-align:center;padding:40px 0;}
+  .empty-ranking h3{font-family:'Orbitron',sans-serif;font-weight:700;font-size:14px;margin-bottom:6px;}
+  .loading-ranking{text-align:center;padding:40px 0;color:#334;font-family:'Orbitron',sans-serif;font-size:11px;}
+  .spin-icon{font-size:30px;animation:spin 1s linear infinite;display:inline-block;margin-bottom:12px;}
+
+  /* ── PLAY PRO ── */
+  .unlimited-badge{padding:12px 16px;margin-bottom:14px;border-radius:10px;display:flex;align-items:center;gap:10px;}
+  .unlimited-label{font-family:'Orbitron',sans-serif;font-weight:700;font-size:11px;}
+  .unlimited-sub{font-size:11px;color:#334;}
+  .pro-tag-small{font-family:'Orbitron',sans-serif;font-size:9px;animation:vip-glow 2s infinite;}
+  .section-title{font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px;color:var(--text);margin-bottom:10px;}
+  .challenge-card-pro{padding:15px 18px;margin-bottom:9px;border-radius:12px;cursor:pointer;background:var(--bg2);border:1px solid var(--border2);display:flex;align-items:center;gap:12px;transition:all 0.2s;}
+  .challenge-icon{font-size:28px;}
+  .challenge-name{font-weight:700;font-size:15px;}
+  .challenge-sub{font-size:11px;color:#445;}
+  .challenge-arrow{font-size:16px;}
+  .streak-card-pro{padding:13px 15px;border-radius:10px;margin-top:10px;display:flex;align-items:center;gap:10px;}
+  .streak-num{font-family:'Orbitron',sans-serif;font-weight:700;font-size:20px;}
+
+  /* ── PROFILE PRO ── */
+  .profile-avatar-pro{width:90px;height:90px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;}
+  .profile-crown{position:absolute;top:-8px;right:-8px;font-size:20px;animation:crown-bounce 2s ease-in-out infinite;}
+  .profile-name-pro{font-family:'Orbitron',sans-serif;font-weight:700;font-size:20px;text-align:center;}
+  .profile-level-pro{font-family:'Orbitron',sans-serif;font-size:12px;text-align:center;margin-top:4px;margin-bottom:24px;}
+  .customizer-box{padding:14px 16px;border-radius:12px;margin-bottom:12px;}
+  .customizer-title{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;margin-bottom:10px;}
+  .stat-row{display:flex;align-items:center;padding:12px 14px;margin-bottom:7px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;}
+  .stat-icon{font-size:17px;margin-right:10px;}
+  .stat-label{flex:1;color:#445;font-weight:600;}
+  .stat-value{font-family:'Orbitron',sans-serif;font-weight:700;}
+  .level-bar-wrap-pro{margin-top:14px;padding:14px;border-radius:12px;}
+  .level-bar-header{display:flex;justify-content:space-between;margin-bottom:7px;font-family:'Orbitron',sans-serif;font-size:10px;}
+  .progress-track{height:6px;background:#0d1e30;border-radius:3px;overflow:hidden;position:relative;}
+  .progress-fill{height:100%;border-radius:3px;transition:width 0.5s;}
+  .btn-logout{width:100%;margin-top:14px;padding:11px;background:transparent;border:1px solid var(--border2);border-radius:10px;color:#334;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;}
+
+  /* ── GAME ── */
+  #screen-game{background:var(--bg);}
+  .game-header-pro{padding:14px 18px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0;border-top:3px solid transparent;}
+  .btn-exit{background:none;border:1px solid var(--border2);border-radius:8px;color:#445;padding:5px 10px;font-family:'Orbitron',sans-serif;font-size:10px;}
+  .game-title{font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px;}
+  .pro-indicator{margin-left:auto;font-size:9px;font-family:'Orbitron',sans-serif;color:var(--gold);animation:vip-glow 2s infinite;}
+  .game-body{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;}
+
+  .q-progress-row{display:flex;justify-content:space-between;margin-bottom:6px;}
+  .q-score{font-family:'Orbitron',sans-serif;font-size:11px;}
+  .q-bar-track{height:4px;background:#0d1e30;border-radius:2px;margin-bottom:20px;overflow:hidden;position:relative;}
+  .q-bar-fill{height:100%;border-radius:2px;transition:width 0.3s;position:relative;overflow:hidden;}
+  .question-box{font-weight:600;font-size:18px;line-height:1.4;padding:22px;background:var(--bg2);border-radius:12px;margin-bottom:20px;}
+  .opt-btn{display:block;width:100%;padding:13px 18px;margin-bottom:10px;border-radius:10px;cursor:pointer;background:var(--bg2);border:2px solid var(--border2);color:var(--text);font-size:16px;font-weight:600;text-align:left;transition:all 0.2s;}
+  .opt-btn.wrong{background:#1a0510;border-color:#ff4444;color:#ff4444;}
+
+  .duel-scores{display:flex;justify-content:space-around;margin-bottom:20px;padding:16px;background:var(--bg2);border-radius:12px;}
+  .duel-score-num{font-family:'Orbitron',sans-serif;font-weight:700;font-size:30px;}
+  .duel-player-name{font-size:11px;color:#445;}
+
+  .clue-item{padding:12px 15px;margin-bottom:8px;background:var(--bg2);border-radius:10px;font-size:15px;animation:slide-in 0.3s ease-out;}
+  .guess-input{width:100%;padding:13px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:16px;margin-bottom:10px;outline:none;}
+  .guess-feedback{text-align:center;padding:8px;font-family:'Orbitron',sans-serif;font-size:12px;margin-bottom:8px;}
+  .guess-btns{display:flex;gap:10px;}
+  .btn-hint{flex:1;padding:12px;background:transparent;border:1px solid var(--border2);border-radius:10px;color:#445;font-family:'Orbitron',sans-serif;font-size:10px;}
+
+  .score-pred{display:flex;gap:12px;margin-bottom:24px;align-items:center;}
+  .score-team{flex:1;text-align:center;}
+  .score-flag{font-size:32px;margin-bottom:8px;}
+  .score-input{width:100%;padding:16px;background:var(--bg2);border-width:2px;border-style:solid;border-radius:10px;color:var(--text);font-family:'Orbitron',sans-serif;font-weight:700;font-size:28px;text-align:center;outline:none;}
+  .vs-label{font-family:'Orbitron',sans-serif;font-weight:700;font-size:22px;color:#223;}
+
+  .result-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;}
+  .result-icon{font-size:72px;animation:float 2s ease-in-out infinite;margin-bottom:16px;}
+  .result-pts{font-family:'Orbitron',sans-serif;font-weight:900;font-size:44px;margin-bottom:4px;}
+  .result-bonus{font-family:'Orbitron',sans-serif;font-size:14px;color:var(--gold);margin-bottom:4px;}
+  .result-sub{font-size:14px;color:#778;margin-bottom:8px;}
+  .result-streak{font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--gold);margin-bottom:32px;}
+
+  .levelup-overlay{position:fixed;inset:0;background:#000d;display:none;align-items:center;justify-content:center;z-index:1000;}
+  .levelup-overlay.show{display:flex;}
+  .levelup-card{animation:level-up-anim 0.6s ease-out;text-align:center;padding:44px 64px;background:linear-gradient(135deg,#04080f,#0a1520);border-radius:24px;}
+  .levelup-icon{font-size:60px;margin-bottom:10px;animation:crown-bounce 0.5s ease-in-out infinite;}
+  .levelup-sub{font-family:'Orbitron',sans-serif;font-size:11px;color:#778;letter-spacing:5px;margin-bottom:4px;}
+  .levelup-name{font-family:'Orbitron',sans-serif;font-weight:900;font-size:44px;}
+  .levelup-bonus{font-family:'Rajdhani',sans-serif;font-size:14px;color:var(--gold);margin-top:8px;}
+  .levelup-hint{color:#334;margin-top:16px;font-size:11px;}
+
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:9999;display:none;}
+  #confetti.show{display:block;}
+  .confetti-piece{position:absolute;top:-20px;animation:confetti-fall linear forwards;}
+
+  #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--bg3);border:1px solid #ffb70044;border-radius:10px;padding:10px 20px;font-weight:600;font-size:14px;color:var(--gold);z-index:9000;white-space:nowrap;opacity:0;transition:all 0.3s;pointer-events:none;}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- ████ HOME ████ -->
+<div id="screen-home" class="screen active">
+  <div class="grid-bg"></div>
+  <div class="orb" style="width:400px;height:400px;background:radial-gradient(#ffb70010,transparent 70%);top:-15%;right:-15%;animation:float 6s ease-in-out infinite"></div>
+  <div class="orb" style="width:350px;height:350px;background:radial-gradient(#00aaff12,transparent 70%);bottom:-10%;left:-15%"></div>
+  <div style="position:relative;text-align:center;animation:fade-up 0.7s ease-out">
+    <div class="home-crown">👑</div>
+    <div class="home-edition">EDICIÓN PRO</div>
+    <div class="home-logo">⚽</div>
+    <div class="home-title">RANKING</div>
+    <div class="home-name">DEPORTIVO ESCOLAR</div>
+    <div class="pro-badge">
+      <span>PRO EDITION</span>
+      <span>⚡</span>
+    </div>
+    <button class="btn-enter-pro" onclick="showScreen('register')">▶ ENTRAR PRO</button>
+    <div class="pro-features">
+      <div class="pro-feat-title">TODO INCLUIDO EN PRO</div>
+      <div class="pfeat"><span>♾️</span>Retos ilimitados</div>
+      <div class="pfeat"><span>⚔️</span>Duelos ilimitados</div>
+      <div class="pfeat"><span>🎨</span>Perfil completamente personalizable</div>
+      <div class="pfeat"><span>👑</span>Insignia VIP dorada en ranking</div>
+      <div class="pfeat"><span>🌟</span>Color exclusivo en ranking</div>
+      <div class="pfeat"><span>🔥</span>Bonus de racha (+5 pts extra)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ████ REGISTER ████ -->
+<div id="screen-register" class="screen">
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;overflow-y:auto;background:var(--bg)">
+    <div class="reg-wrap">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <div class="reg-title-pro">CREAR PERFIL PRO</div>
+        <span style="font-size:18px">👑</span>
+      </div>
+      <div class="reg-sub">Personaliza tu identidad en el ranking</div>
+
+      <label class="field-label-gold">ELIGE TU AVATAR</label>
+      <div class="avatar-grid" id="avatar-grid"></div>
+
+      <label class="field-label-gold">COLOR DE PERFIL <span style="font-size:9px;color:#556">(EXCLUSIVO PRO)</span></label>
+      <div class="color-grid" id="color-grid"></div>
+
+      <label class="field-label-gold">TU NOMBRE</label>
+      <input id="reg-name" class="field-input" placeholder="Ej: Legend_MX" maxlength="20" oninput="updatePreview()"/>
+
+      <label class="field-label-gold">ELIGE TU DEPORTE</label>
+      <div class="sport-card-pro" id="sport-soccer" onclick="selectSport('soccer')">
+        <span style="font-size:28px">⚽</span>
+        <span class="sport-name">Football (Soccer)</span>
+        <span class="check">✓</span>
+      </div>
+      <div class="sport-card-pro" id="sport-american" onclick="selectSport('american')">
+        <span style="font-size:28px">🏈</span>
+        <span class="sport-name">Football Americano</span>
+        <span class="check">✓</span>
+      </div>
+
+      <div class="preview-card" id="preview-card" style="display:none">
+        <div id="prev-avatar-circle" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid"></div>
+        <div>
+          <div id="prev-name" style="font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px"></div>
+          <div style="font-size:10px;color:#445">Vista previa</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="showScreen('home')">← VOLVER</button>
+        <button class="btn-pro-start" onclick="doRegister()">¡COMENZAR PRO! 👑</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ████ MAIN ████ -->
+<div id="screen-main" class="screen">
+  <div class="main-header-pro" id="main-header">
+    <div class="header-top-line"></div>
+    <div class="hdr-user">
+      <div class="hdr-avatar" id="hdr-avatar">⚽</div>
+      <div>
+        <div><span class="hdr-name-pro" id="hdr-name">—</span><span class="vip-tag">VIP</span></div>
+        <div class="hdr-edition">PRO EDITION</div>
+      </div>
+    </div>
+    <div class="hdr-pts">
+      <div class="hdr-pts-num" id="hdr-pts">0 <span style="font-size:9px;color:#445">PTS</span></div>
+      <div class="hdr-pts-level" id="hdr-level">Rookie · 0🔥</div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- RANKING -->
+    <div id="tab-ranking" class="tab active">
+      <div class="ranking-header">
+        <div class="ranking-title">TOP PRO PRIVADO</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <button onclick="loadRanking()" style="background:none;border:1px solid var(--border2);border-radius:6px;color:#445;padding:3px 8px;font-family:'Orbitron',sans-serif;font-size:8px">↺</button>
+          <div class="live-badge-gold"><span class="live-dot-gold"></span>EN VIVO</div>
+        </div>
+      </div>
+      <div class="my-pos-card-pro" id="my-pos-card">
+        <div class="my-pos-num" id="my-rank-pos">#—</div>
+        <div class="my-mini-avatar" id="my-mini-av">⚽</div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:14px" id="my-rank-name">—</div>
+          <div style="font-size:10px;color:#445">Tu posición · VIP 👑</div>
+        </div>
+        <div style="font-family:'Orbitron',sans-serif;font-weight:700;font-size:14px" id="my-rank-pts">0</div>
+      </div>
+      <div id="ranking-list"><div class="loading-ranking"><div class="spin-icon">⚙️</div><div>Cargando ranking...</div></div></div>
+      <div class="ranking-footer">RANKING PRIVADO · SOLO JUGADORES PRO · REINICIO SEMANAL</div>
+    </div>
+
+    <!-- PLAY -->
+    <div id="tab-play" class="tab">
+      <div class="unlimited-badge" id="unlimited-badge">
+        <span style="font-size:20px">♾️</span>
+        <div style="flex:1">
+          <div class="unlimited-label" id="ul-label">RETOS ILIMITADOS</div>
+          <div class="unlimited-sub">Sin límites diarios · Duelos sin espera</div>
+        </div>
+        <span class="pro-tag-small">PRO</span>
+      </div>
+      <div class="section-title" id="play-section-title">⚽ FÚTBOL — TODOS LOS MODOS</div>
+      <div id="challenges-list"></div>
+      <div class="streak-card-pro" id="streak-card">
+        <span style="font-size:20px">🔥</span>
+        <div style="flex:1"><div style="font-weight:700">Racha PRO</div><div style="font-size:11px;color:#445">+5 puntos bonus automático por racha activa</div></div>
+        <div class="streak-num" id="streak-display">0x</div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="tab-profile" class="tab">
+      <div style="text-align:center;margin-bottom:24px;position:relative">
+        <div style="position:relative;display:inline-block">
+          <div class="profile-avatar-pro" id="prof-avatar">⚽<div class="profile-crown">👑</div></div>
+        </div>
+        <div class="profile-name-pro" id="prof-name">—</div>
+        <div class="profile-level-pro" id="prof-level">Rookie</div>
+      </div>
+
+      <!-- Color picker -->
+      <div class="customizer-box" id="color-picker-box">
+        <div class="customizer-title" id="color-picker-title">TU COLOR EXCLUSIVO PRO</div>
+        <div class="color-grid" id="profile-color-grid"></div>
+      </div>
+      <!-- Avatar picker -->
+      <div class="customizer-box" id="avatar-picker-box">
+        <div class="customizer-title" id="avatar-picker-title">TU AVATAR</div>
+        <div class="avatar-grid" id="profile-avatar-grid"></div>
+      </div>
+
+      <div class="stat-row"><span class="stat-icon">⭐</span><span class="stat-label">Puntos totales</span><span class="stat-value" id="prof-pts">0</span></div>
+      <div class="stat-row"><span class="stat-icon">🏆</span><span class="stat-label">Posición en ranking</span><span class="stat-value" id="prof-rank">#—</span></div>
+      <div class="stat-row"><span class="stat-icon">🔥</span><span class="stat-label">Racha actual</span><span class="stat-value" id="prof-streak">0x</span></div>
+      <div class="stat-row"><span class="stat-icon">💎</span><span class="stat-label">Modo</span><span class="stat-value">PRO 👑</span></div>
+      <div class="stat-row"><span class="stat-icon">👥</span><span class="stat-label">Jugadores en ranking</span><span class="stat-value" id="prof-total">—</span></div>
+      <div class="level-bar-wrap-pro" id="level-bar-wrap">
+        <div class="level-bar-header">
+          <span id="lbar-level">Rookie</span>
+          <span id="lbar-target" style="color:#334">0/200</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="lbar-fill" style="width:0%"></div></div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">CERRAR SESIÓN</button>
+    </div>
+  </div>
+
+  <nav class="main-nav-pro" id="main-nav">
+    <div class="nav-top-line" id="nav-top-line"></div>
+    <button class="nav-btn-pro active" id="nav-ranking" onclick="switchTab('ranking')">
+      <span class="nav-icon">🏆</span>
+      <span class="nav-label">Ranking</span>
+      <div class="nav-bar" id="nav-bar-ranking"></div>
+    </button>
+    <button class="nav-btn-pro" id="nav-play" onclick="switchTab('play')">
+      <span class="nav-icon" id="nav-play-icon">⚽</span>
+      <span class="nav-label">Jugar</span>
+      <div class="nav-bar" id="nav-bar-play"></div>
+    </button>
+    <button class="nav-btn-pro" id="nav-profile" onclick="switchTab('profile')">
+      <span class="nav-icon" id="nav-profile-icon">⚽</span>
+      <span class="nav-label">Perfil</span>
+      <div class="nav-bar" id="nav-bar-profile"></div>
+    </button>
+  </nav>
+</div>
+
+<!-- ████ GAME ████ -->
+<div id="screen-game" class="screen">
+  <div class="game-header-pro" id="game-header">
+    <button class="btn-exit" onclick="exitGame()">‹ SALIR</button>
+    <span class="game-title" id="game-title">TRIVIA</span>
+    <span class="pro-indicator">PRO 👑</span>
+  </div>
+  <div class="game-body" id="game-body"></div>
+</div>
+
+<!-- Level Up -->
+<div class="levelup-overlay" id="levelup-overlay" onclick="hideLevelUp()">
+  <div class="levelup-card" id="levelup-card">
+    <div class="levelup-icon">🏆</div>
+    <div class="levelup-sub">¡SUBISTE DE NIVEL!</div>
+    <div class="levelup-name" id="levelup-name"></div>
+    <div class="levelup-bonus">+5 PUNTOS BONUS DE RACHA</div>
+    <div class="levelup-hint">Toca para continuar</div>
+  </div>
+</div>
+
+<div id="confetti"></div>
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════
+const TRIVIA_SOCCER=[
+  {q:"¿Cuántos jugadores tiene un equipo en el campo?",opts:["9","10","11","12"],a:2},
+  {q:"¿En qué país nació el fútbol moderno?",opts:["España","Brasil","Inglaterra","Francia"],a:2},
+  {q:"¿Cuánto dura un partido estándar?",opts:["80 min","90 min","100 min","120 min"],a:1},
+  {q:"¿Cómo se llama el torneo mundial de selecciones?",opts:["UEFA","Copa América","Mundial FIFA","Champions"],a:2},
+  {q:"¿Qué es un 'hat-trick'?",opts:["Pase decisivo","3 goles en un partido","Tiro libre","Penalti"],a:1},
+  {q:"¿Qué país ha ganado más Copas del Mundo?",opts:["Alemania","Argentina","Brasil","Italia"],a:2},
+  {q:"¿Máximo goleador de la Champions League?",opts:["Messi","Ronaldo","Raúl","Benzema"],a:1},
+  {q:"¿En qué año se fundó la FIFA?",opts:["1900","1904","1910","1920"],a:1},
+];
+const TRIVIA_NFL=[
+  {q:"¿Cuántos jugadores por equipo en el campo?",opts:["9","10","11","12"],a:2},
+  {q:"¿Cuántos puntos vale un touchdown?",opts:["3","4","6","7"],a:2},
+  {q:"¿Cómo se llama el partido final de la NFL?",opts:["NFL Final","Super Bowl","Rose Bowl","Pro Bowl"],a:1},
+  {q:"¿Cuántos downs para avanzar 10 yardas?",opts:["3","4","5","6"],a:1},
+  {q:"¿Cuánto vale un field goal?",opts:["1","2","3","4"],a:2},
+  {q:"¿Equipo con más Super Bowls?",opts:["Cowboys","49ers","Patriots","Steelers"],a:2},
+  {q:"¿Cuántos jugadores en un roster activo?",opts:["45","48","53","55"],a:2},
+  {q:"¿Quién lanza el balón?",opts:["Running Back","Quarterback","Wide Receiver","Linebacker"],a:1},
+];
+const SOCCER_PLAYERS=[
+  {name:"Cristiano Ronaldo",clues:["Delantero portugués","Jugó en Real Madrid y Juventus","Conocido como CR7"]},
+  {name:"Lionel Messi",clues:["Campeón del Mundo 2022","Zurdo argentino","Juega en Inter Miami"]},
+  {name:"Pelé",clues:["3 veces campeón mundial","Brasileño legendario","El Rey del Fútbol"]},
+  {name:"Ronaldinho",clues:["Balón de Oro 2005","Brasileño mágico","Jugó en FC Barcelona"]},
+  {name:"Zinedine Zidane",clues:["Campeón del Mundo 1998","Cabezazo en la final 2006","Francés de origen argelino"]},
+];
+const NFL_TEAMS=[
+  {name:"Dallas Cowboys",clues:["America's Team","Estrella plateada en el casco","Con sede en Texas"]},
+  {name:"New England Patriots",clues:["6 Super Bowls","Tricampeones 2001-2004","De Massachusetts"]},
+  {name:"Kansas City Chiefs",clues:["QB es Patrick Mahomes","Arrowhead Stadium","Missouri"]},
+  {name:"San Francisco 49ers",clues:["Niners es su apodo","Levi's Stadium","California"]},
+  {name:"Green Bay Packers",clues:["La comunidad es propietaria","Lambeau Field","Wisconsin"]},
+];
+const PROFILE_COLORS=["#00ff88","#00aaff","#ff4488","#ffb700","#ff9f00","#cc44ff","#ff4444","#44ffcc"];
+const AVATAR_ICONS=["⚽","🏈","🦁","🐯","🦅","🔥","⚡","🏆","💎","👑"];
+const LEVEL_COLORS={Rookie:"#aaa",Pro:"#00aaff",MVP:"#ff9f00",Leyenda:"#ff4488"};
+const RK_PREFIX="rde_pro_rk:";
+const RK_WEEK="rde_pro_week";
+
+// ══════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════
+let user=null, rankingCache=[], rankingInterval=null;
+let selectedSport="", selectedColor=PROFILE_COLORS[0], selectedAvatar=AVATAR_ICONS[0];
+let activeGame=null;
+
+function getLevel(p){return p>=1000?"Leyenda":p>=500?"MVP":p>=200?"Pro":"Rookie";}
+
+// ══════════════════════════════════════════════════
+//  STORAGE
+// ══════════════════════════════════════════════════
+async function sGet(k,sh=true){try{const r=await window.storage.get(k,sh);return r?JSON.parse(r.value):null;}catch{return null;}}
+async function sSet(k,v,sh=true){try{await window.storage.set(k,JSON.stringify(v),sh);}catch{}}
+async function sList(p,sh=true){try{const r=await window.storage.list(p,sh);return r?.keys||[];}catch{return[];}}
+
+// ══════════════════════════════════════════════════
+//  INIT REGISTER UI
+// ══════════════════════════════════════════════════
+function buildRegisterUI(){
+  const ag=document.getElementById('avatar-grid');
+  ag.innerHTML=AVATAR_ICONS.map((a,i)=>`<div class="avatar-opt${i===0?" selected":""}" onclick="selectAvatar('${a}',this)">${a}</div>`).join("");
+  const cg=document.getElementById('color-grid');
+  cg.innerHTML=PROFILE_COLORS.map((c,i)=>`<div class="color-opt${i===0?" selected":""}" style="background:${c};box-shadow:${i===0?`0 0 12px ${c}`:""}" onclick="selectColor('${c}',this)"></div>`).join("");
+}
+
+function selectAvatar(av,el){
+  selectedAvatar=av;
+  document.querySelectorAll('#avatar-grid .avatar-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  updatePreview();
+}
+function selectColor(c,el){
+  selectedColor=c;
+  document.querySelectorAll('#color-grid .color-opt').forEach(e=>{e.classList.remove('selected');e.style.boxShadow="";});
+  el.classList.add('selected'); el.style.boxShadow=`0 0 12px ${c}`;
+  updatePreview();
+}
+function selectSport(id){
+  selectedSport=id;
+  document.querySelectorAll('.sport-card-pro').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('sport-'+id).classList.add('selected');
+  updatePreview();
+}
+function updatePreview(){
+  const name=document.getElementById('reg-name').value.trim();
+  const pc=document.getElementById('preview-card');
+  if(!name){pc.style.display="none";return;}
+  pc.style.display="flex";
+  const circ=document.getElementById('prev-avatar-circle');
+  circ.textContent=selectedAvatar; circ.style.background=selectedColor+"22"; circ.style.borderColor=selectedColor;
+  const nm=document.getElementById('prev-name');
+  nm.textContent=name; nm.style.color=selectedColor;
+  nm.innerHTML=`${name} <span style="font-size:9px;background:#ffb70022;border:1px solid #ffb70044;border-radius:3px;padding:1px 5px;color:#ffb700;font-family:'Orbitron',sans-serif">VIP</span>`;
+}
+
+// ══════════════════════════════════════════════════
+//  USER / SAVE
+// ══════════════════════════════════════════════════
+async function saveUser(u){
+  user=u;
+  await sSet("rde_pro_me",u,false);
+  const level=getLevel(u.points);
+  await sSet(RK_PREFIX+u.name,{name:u.name,pts:u.points,level,sport:u.sport==="soccer"?"⚽":"🏈",pro:true,color:u.color||"#00ff88",avatar:u.avatar||"⚽",updatedAt:Date.now()},true);
+  updateAllUI();
+}
+
+async function addPoints(rawPts){
+  if(!user)return 0;
+  const streak=user.streak||0;
+  const bonus=rawPts>0&&streak>0?5:0;
+  const total=rawPts+bonus;
+  const oldLevel=getLevel(user.points);
+  const newU={...user,points:user.points+total};
+  await saveUser(newU);
+  const newLevel=getLevel(newU.points);
+  if(newLevel!==oldLevel)showLevelUp(newLevel);
+  await loadRanking();
+  return bonus;
+}
+
+// ══════════════════════════════════════════════════
+//  RANKING
+// ══════════════════════════════════════════════════
+async function loadRanking(){
+  const keys=await sList(RK_PREFIX,true);
+  if(keys.length===0){rankingCache=[];renderRanking();return;}
+  let weekData=await sGet(RK_WEEK,true);
+  const now=Date.now();
+  if(!weekData){weekData={start:now};await sSet(RK_WEEK,weekData,true);}
+  if(now-weekData.start>7*86400000){
+    await sSet(RK_WEEK,{start:now},true);
+    for(const k of keys){const e=await sGet(k,true);if(e)await sSet(k,{...e,pts:0,level:"Rookie"},true);}
+    if(user){user.points=0;await saveUser(user);}
+  }
+  const entries=await Promise.all(keys.map(k=>sGet(k,true)));
+  rankingCache=entries.filter(Boolean).sort((a,b)=>b.pts-a.pts).slice(0,20);
+  renderRanking();
+  updateAllUI();
+}
+
+function renderRanking(){
+  const list=document.getElementById('ranking-list');
+  const medals=["🥇","🥈","🥉"];
+  if(!user)return;
+  const myPos=rankingCache.findIndex(r=>r.name===user.name);
+  const myRankN=myPos===-1?rankingCache.length+1:myPos+1;
+  const uc=user.color||"#00ff88";
+  const ua=user.avatar||"⚽";
+
+  document.getElementById('my-rank-pos').textContent=`#${myRankN}`;
+  document.getElementById('my-rank-pos').style.color=uc;
+  document.getElementById('my-rank-name').textContent=user.name;
+  document.getElementById('my-rank-name').style.color=uc;
+  document.getElementById('my-rank-pts').textContent=user.points;
+  document.getElementById('my-rank-pts').style.color=uc;
+  document.getElementById('my-mini-av').textContent=ua;
+  document.getElementById('my-mini-av').style.background=uc+"22";
+  document.getElementById('my-mini-av').style.border=`2px solid ${uc}`;
+  const myCard=document.getElementById('my-pos-card');
+  myCard.style.background=uc+"11";
+  myCard.style.border=`1px solid ${uc}44`;
+  document.getElementById('prof-rank').textContent=`#${myRankN}`;
+  document.getElementById('prof-total').textContent=rankingCache.length;
+
+  if(rankingCache.length===0){
+    list.innerHTML=`<div class="empty-ranking"><div style="font-size:48px;margin-bottom:12px">🏆</div><h3>SÉ EL PRIMERO</h3><p style="font-size:14px;color:#445">El ranking está vacío. ¡Juega y sube!</p></div>`;
+    return;
+  }
+  list.innerHTML=rankingCache.map((r,i)=>{
+    const isMe=r.name===user.name;
+    const rc=r.color||"#00aaff";
+    const lc=LEVEL_COLORS[r.level]||"#aaa";
+    const gold=i===0?"#ffb700":i===1?"#aaa":i===2?"#cd7f32":undefined;
+    return `<div class="rank-item${isMe?" is-me":""}" style="animation:slide-in 0.3s ease-out ${i*0.05}s both;${isMe?`background:${rc}11;border-color:${rc}44`:""}">
+      <div class="rank-pos${i<3?" medal":""}">${i<3?medals[i]:i+1}</div>
+      <div style="font-size:16px">${r.avatar||r.sport}</div>
+      <div class="rank-info">
+        <div class="rank-name" style="color:${rc}">${r.name}<span class="vip-badge">VIP</span></div>
+        <div class="rank-level" style="color:${lc}">${r.level}</div>
+      </div>
+      <div class="rank-pts" style="color:${gold||rc}">${r.pts}</div>
+    </div>`;
+  }).join("");
+}
+
+// ══════════════════════════════════════════════════
+//  UI UPDATES
+// ══════════════════════════════════════════════════
+function updateAllUI(){
+  if(!user)return;
+  const level=getLevel(user.points);
+  const lc=LEVEL_COLORS[level];
+  const uc=user.color||"#00ff88";
+  const ua=user.avatar||"⚽";
+
+  // Header
+  const hdrAv=document.getElementById('hdr-avatar');
+  hdrAv.textContent=ua; hdrAv.style.background=uc+"22"; hdrAv.style.border=`2px solid ${uc}`;
+  document.getElementById('hdr-name').textContent=user.name;
+  document.getElementById('hdr-name').style.color=uc;
+  const hdrPts=document.getElementById('hdr-pts');
+  hdrPts.innerHTML=`${user.points} <span style="font-size:9px;color:#445">PTS</span>`;
+  hdrPts.style.color=uc;
+  document.getElementById('hdr-level').textContent=`${level} · ${user.streak||0}🔥`;
+  document.getElementById('hdr-level').style.color=lc;
+  document.getElementById('main-header').style.borderBottomColor=uc+"44";
+
+  // Nav colors
+  document.getElementById('nav-top-line').style.background=`linear-gradient(90deg,transparent,${uc}66,#ffb70066,${uc}66,transparent)`;
+  document.getElementById('main-nav').style.borderTopColor=uc+"33";
+  ['ranking','play','profile'].forEach(t=>{
+    const bar=document.getElementById('nav-bar-'+t);
+    if(bar){bar.style.background=uc;bar.style.boxShadow=`0 0 8px ${uc}`;}
+    const btn=document.getElementById('nav-'+t);
+    if(btn.classList.contains('active')) btn.querySelector('.nav-label').style.color=uc;
+  });
+
+  // Nav icons
+  const isSoccer=user.sport==="soccer";
+  document.getElementById('nav-play-icon').textContent=isSoccer?"⚽":"🏈";
+  document.getElementById('nav-profile-icon').textContent=ua;
+
+  // Play unlimited badge
+  const ub=document.getElementById('unlimited-badge');
+  ub.style.background=uc+"11"; ub.style.border=`1px solid ${uc}33`;
+  document.getElementById('ul-label').style.color=uc;
+  document.getElementById('play-section-title').textContent=isSoccer?"⚽ FÚTBOL — TODOS LOS MODOS":"🏈 NFL — TODOS LOS MODOS";
+
+  // Streak
+  document.getElementById('streak-display').textContent=`${user.streak||0}x`;
+  document.getElementById('streak-display').style.color=(user.streak||0)>0?"#ffb700":"#223";
+  const sc=document.getElementById('streak-card');
+  sc.style.background=uc+"11"; sc.style.border=`1px solid ${uc}22`;
+
+  // Challenges
+  const challenges=isSoccer?[
+    {id:"trivia",icon:"🧠",label:"Trivia Rápida",desc:"Banco ampliado de preguntas"},
+    {id:"player",icon:"⭐",label:"Adivina el Jugador",desc:"5 jugadores diferentes"},
+    {id:"score",icon:"📊",label:"Predicción de Marcador",desc:"Predice el resultado"},
+    {id:"duel",icon:"⚔️",label:"Duelo 1 vs 1",desc:"8 rondas · Ilimitado"},
+  ]:[
+    {id:"trivia",icon:"🧠",label:"Trivia NFL",desc:"Banco ampliado de preguntas"},
+    {id:"team",icon:"🏟️",label:"Adivina el Equipo",desc:"5 equipos distintos"},
+    {id:"quick",icon:"⚡",label:"Preguntas Rápidas",desc:"8 preguntas seguidas"},
+    {id:"duel",icon:"⚔️",label:"Duelo 1 vs 1",desc:"8 rondas · Ilimitado"},
+  ];
+  document.getElementById('challenges-list').innerHTML=challenges.map((c,i)=>`
+    <div class="challenge-card-pro" onclick="startGame('${c.id}')" style="animation:slide-in 0.3s ease-out ${i*0.07}s both"
+      onmouseover="this.style.borderColor='${uc}66';this.style.background='${uc}08'"
+      onmouseout="this.style.borderColor='var(--border2)';this.style.background='var(--bg2)'">
+      <span class="challenge-icon">${c.icon}</span>
+      <div style="flex:1">
+        <div class="challenge-name">${c.label}</div>
+        <div class="challenge-sub">${c.desc}</div>
+      </div>
+      <span class="challenge-arrow" style="color:${uc}">›</span>
+    </div>`).join("");
+
+  // Profile
+  const pav=document.getElementById('prof-avatar');
+  pav.textContent=ua; pav.style.background=uc+"22"; pav.style.border=`3px solid ${uc}`; pav.style.boxShadow=`0 0 40px ${uc}44`;
+  pav.innerHTML=`${ua}<div class="profile-crown">👑</div>`;
+  document.getElementById('prof-name').textContent=user.name;
+  document.getElementById('prof-name').style.color=uc;
+  document.getElementById('prof-level').textContent=level;
+  document.getElementById('prof-level').style.color=lc;
+  document.getElementById('prof-pts').textContent=user.points;
+  document.getElementById('prof-pts').style.color=uc;
+  document.getElementById('prof-streak').textContent=`${user.streak||0}x 🔥`;
+
+  // Color/avatar pickers in profile
+  const cpb=document.getElementById('color-picker-box');
+  cpb.style.background=uc+"11"; cpb.style.border=`1px solid ${uc}22`;
+  document.getElementById('color-picker-title').style.color=uc;
+  document.getElementById('profile-color-grid').innerHTML=PROFILE_COLORS.map(c=>`<div class="color-opt${uc===c?" selected":""}" style="background:${c};box-shadow:${uc===c?`0 0 12px ${c}`:""}" onclick="profileSelectColor('${c}',this)"></div>`).join("");
+
+  const apb=document.getElementById('avatar-picker-box');
+  apb.style.background=uc+"11"; apb.style.border=`1px solid ${uc}22`;
+  document.getElementById('avatar-picker-title').style.color=uc;
+  document.getElementById('profile-avatar-grid').innerHTML=AVATAR_ICONS.map(a=>`<div class="avatar-opt${ua===a?" selected":""}" style="${ua===a?`border-color:${uc};background:${uc}22;`:""}" onclick="profileSelectAvatar('${a}',this)">${a}</div>`).join("");
+
+  // Level bar
+  const lbw=document.getElementById('level-bar-wrap');
+  lbw.style.background=uc+"11"; lbw.style.border=`1px solid ${uc}22`;
+  document.getElementById('lbar-level').textContent=level;
+  document.getElementById('lbar-level').style.color=lc;
+  const targets={Rookie:200,Pro:500,MVP:1000};
+  document.getElementById('lbar-target').textContent=targets[level]?`${user.points}/${targets[level]}`:"MAX";
+  let pct=0;
+  if(level==="Rookie")pct=(user.points/200)*100;
+  else if(level==="Pro")pct=((user.points-200)/300)*100;
+  else if(level==="MVP")pct=((user.points-500)/500)*100;
+  else pct=100;
+  document.getElementById('lbar-fill').style.width=Math.min(100,pct)+"%";
+  document.getElementById('lbar-fill').style.background=`linear-gradient(90deg,${uc},#ffb700)`;
+
+  // Game header
+  if(document.getElementById('game-header')){
+    document.getElementById('game-header').style.borderTopColor=uc;
+    document.getElementById('game-title').style.color=uc;
+  }
+}
+
+async function profileSelectColor(c,el){
+  document.querySelectorAll('#profile-color-grid .color-opt').forEach(e=>{e.classList.remove('selected');e.style.boxShadow="";});
+  el.classList.add('selected');el.style.boxShadow=`0 0 12px ${c}`;
+  await saveUser({...user,color:c});
+}
+async function profileSelectAvatar(a,el){
+  document.querySelectorAll('#profile-avatar-grid .avatar-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  await saveUser({...user,avatar:a});
+}
+
+// ══════════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  if(id==='register')buildRegisterUI();
+  if(id==='main'){
+    loadRanking();
+    if(rankingInterval)clearInterval(rankingInterval);
+    rankingInterval=setInterval(loadRanking,15000);
+    updateAllUI();
+  }
+}
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelectorAll('.nav-btn-pro').forEach(b=>{
+    b.classList.remove('active');
+    b.querySelector('.nav-label').style.color='#223';
+  });
+  const btn=document.getElementById('nav-'+name);
+  btn.classList.add('active');
+  const uc=user?.color||"#ffb700";
+  btn.querySelector('.nav-label').style.color=uc;
+}
+
+// ══════════════════════════════════════════════════
+//  REGISTER
+// ══════════════════════════════════════════════════
+async function doRegister(){
+  const name=document.getElementById('reg-name').value.trim();
+  if(!name)return showToast("¡Escribe tu nombre!");
+  if(!selectedSport)return showToast("¡Elige un deporte!");
+  const existing=await sGet(RK_PREFIX+name,true);
+  if(existing)return showToast("Ese nombre ya existe, elige otro");
+  const u={name,sport:selectedSport,points:0,streak:0,color:selectedColor,avatar:selectedAvatar};
+  await saveUser(u);
+  showScreen('main');
+}
+async function doLogout(){
+  if(rankingInterval)clearInterval(rankingInterval);
+  user=null;
+  await sSet("rde_pro_me",null,false);
+  switchTab('ranking');
+  showScreen('home');
+}
+
+// ══════════════════════════════════════════════════
+//  GAME ENGINE
+// ══════════════════════════════════════════════════
+function startGame(mode){
+  if(!user)return;
+  const triviaSet=user.sport==="soccer"?TRIVIA_SOCCER:TRIVIA_NFL;
+  const titles={trivia:`TRIVIA ${user.sport==="soccer"?"FÚTBOL":"NFL"}`,quick:"PREGUNTAS RÁPIDAS",player:"ADIVINA EL JUGADOR",team:"ADIVINA EL EQUIPO",duel:"⚔️ DUELO 1 VS 1",score:"📊 PREDICCIÓN"};
+  document.getElementById('game-title').textContent=titles[mode]||"JUEGO";
+  activeGame={mode,triviaSet,qi:0,score:0,myDuelScore:0,aiDuelScore:0,clueIdx:0,guessValue:"",guessFeedback:"",guessItem:null};
+  showScreen('game');
+  document.getElementById('game-header').style.borderTopColor=user.color||"#ffb700";
+  document.getElementById('game-title').style.color=user.color||"#ffb700";
+  renderGame();
+}
+function exitGame(){showScreen('main');}
+
+function renderGame(){
+  const body=document.getElementById('game-body');
+  const m=activeGame.mode;
+  if(m==="trivia"||m==="quick")renderTrivia(body);
+  else if(m==="player"||m==="team")renderGuess(body);
+  else if(m==="duel")renderDuel(body);
+  else if(m==="score")renderScore(body);
+}
+
+function renderTrivia(body){
+  const g=activeGame,uc=user.color||"#ffb700";
+  const max=g.triviaSet.length;
+  const q=g.triviaSet[g.qi];
+  body.innerHTML=`
+    <div class="q-progress-row">
+      <span style="font-family:'Orbitron',sans-serif;font-size:10px;color:#445">${g.qi+1}/${max}</span>
+      <span class="q-score" style="color:${uc}">${g.score} PTS · Racha:${user.streak||0}🔥</span>
+    </div>
+    <div class="q-bar-track"><div class="q-bar-fill" style="width:${(g.qi/max)*100}%;background:linear-gradient(90deg,${uc},#00aaff)"></div></div>
+    <div class="question-box" style="border:1px solid ${uc}22">${q.q}</div>
+    ${q.opts.map((opt,i)=>`<button class="opt-btn" style="border-color:var(--border2)" onclick="answerTrivia(${i})">${opt}</button>`).join("")}
+  `;
+}
+function answerTrivia(idx){
+  const g=activeGame,uc=user.color||"#ffb700";
+  const max=g.triviaSet.length;
+  const q=g.triviaSet[g.qi];
+  const correct=idx===q.a;
+  document.querySelectorAll('.opt-btn').forEach((b,i)=>{
+    b.onclick=null;
+    if(i===q.a){b.style.background=uc+"22";b.style.borderColor=uc;b.style.color=uc;}
+    else if(i===idx&&!correct){b.classList.add('wrong');}
+  });
+  if(correct)g.score+=10;
+  setTimeout(async()=>{
+    g.qi++;
+    if(g.qi>=max){
+      const bonus=await addPoints(g.score);
+      await saveUser({...user,streak:g.score>0?(user.streak||0)+1:user.streak||0});
+      showResult(g.score,bonus,"PUNTOS GANADOS",`Racha: ${user.streak||0}x`);
+    } else renderTrivia(document.getElementById('game-body'));
+  },900);
+}
+
+function renderGuess(body){
+  const g=activeGame,uc=user.color||"#ffb700";
+  if(!g.guessItem){
+    const items=g.mode==="player"?SOCCER_PLAYERS:NFL_TEAMS;
+    g.guessItem=items[Math.floor(Math.random()*items.length)];
+  }
+  const item=g.guessItem;
+  const icon=g.mode==="player"?"⭐":"🏟️";
+  const moreClue=g.clueIdx<item.clues.length-1?`<button class="btn-hint" onclick="addClue()">+ PISTA</button>`:"";
+  const fb=g.guessFeedback?`<div class="guess-feedback" style="color:${g.guessFeedback==="correct"?uc:"#ff4444"}">${g.guessFeedback==="correct"?"✓ ¡CORRECTO! +10":"✗ Inténtalo de nuevo"}</div>`:"";
+  body.innerHTML=`
+    <div style="text-align:center;font-size:56px;margin-bottom:20px;animation:float 3s ease-in-out infinite">${icon}</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#445;letter-spacing:2px;margin-bottom:10px">PISTAS (${item.clues.length-g.clueIdx} disponibles)</div>
+    ${item.clues.slice(0,g.clueIdx+1).map(c=>`<div class="clue-item" style="border:1px solid ${uc}22">💡 ${c}</div>`).join("")}
+    ${fb}
+    <input class="guess-input" id="guess-input" style="border-color:${uc}44" placeholder="Tu respuesta..." oninput="activeGame.guessValue=this.value"/>
+    <div class="guess-btns">${moreClue}<button style="flex:2;padding:12px;background:linear-gradient(135deg,${uc},#00aaff);border:none;border-radius:10px;color:var(--bg);font-family:'Orbitron',sans-serif;font-weight:700;font-size:12px" onclick="submitGuess()">ADIVINAR</button></div>
+  `;
+  if(g.guessValue)document.getElementById('guess-input').value=g.guessValue;
+}
+function addClue(){if(activeGame.clueIdx<activeGame.guessItem.clues.length-1)activeGame.clueIdx++;renderGuess(document.getElementById('game-body'));}
+async function submitGuess(){
+  const g=activeGame;
+  const val=(document.getElementById('guess-input')?.value||g.guessValue||"").toLowerCase();
+  const words=g.guessItem.name.toLowerCase().split(" ");
+  if(words.some(w=>val.includes(w))){
+    g.guessFeedback="correct";
+    renderGuess(document.getElementById('game-body'));
+    const bonus=await addPoints(10);
+    await saveUser({...user,streak:(user.streak||0)+1});
+    setTimeout(()=>showResult(10,bonus,"+10 PUNTOS",`Era: ${g.guessItem.name}`),700);
+  } else {g.guessFeedback="wrong";renderGuess(document.getElementById('game-body'));}
+}
+
+function renderDuel(body){
+  const g=activeGame,uc=user.color||"#ffb700";
+  const max=8;
+  const q=g.triviaSet[g.qi%g.triviaSet.length];
+  body.innerHTML=`
+    <div class="duel-scores">
+      <div class="duel-player"><div class="duel-score-num" style="color:${uc}">${g.myDuelScore}</div><div class="duel-player-name">${user.name}</div></div>
+      <div style="font-family:'Orbitron',sans-serif;font-weight:700;font-size:20px;color:#223;align-self:center">VS</div>
+      <div class="duel-player"><div class="duel-score-num" style="color:#ff4444">${g.aiDuelScore}</div><div class="duel-player-name">CPU Elite</div></div>
+    </div>
+    <div style="text-align:center;font-family:'Orbitron',sans-serif;font-size:10px;color:#334;margin-bottom:14px">${g.qi+1}/${max} · DUELO EXTENDIDO PRO</div>
+    <div class="question-box" style="border:1px solid ${uc}22">${q.q}</div>
+    ${q.opts.map((opt,i)=>`<button class="opt-btn" onclick="answerDuel(${i})">${opt}</button>`).join("")}
+  `;
+}
+function answerDuel(idx){
+  const g=activeGame,uc=user.color||"#ffb700";
+  const max=8;
+  const q=g.triviaSet[g.qi%g.triviaSet.length];
+  const correct=idx===q.a;
+  document.querySelectorAll('.opt-btn').forEach((b,i)=>{
+    b.onclick=null;
+    if(i===q.a){b.style.background=uc+"22";b.style.borderColor=uc;b.style.color=uc;}
+    else if(i===idx&&!correct)b.classList.add('wrong');
+  });
+  if(correct)g.myDuelScore++;
+  if(Math.random()>.45)g.aiDuelScore++;
+  setTimeout(async()=>{
+    g.qi++;
+    if(g.qi>=max){
+      const won=g.myDuelScore>g.aiDuelScore;
+      const pts=won?20:0;
+      const bonus=await addPoints(pts);
+      await saveUser({...user,streak:won?(user.streak||0)+1:0});
+      const icon=won?"🏆":"😤";
+      const msg=won?"¡VICTORIA!":"DERROTA";
+      document.getElementById('game-body').innerHTML=`
+        <div class="result-screen">
+          <div class="result-icon">${icon}</div>
+          <div class="result-pts" style="color:${won?uc:"#ff4444"}">${g.myDuelScore} — ${g.aiDuelScore}</div>
+          <div class="result-label" style="font-family:'Orbitron',sans-serif;font-size:11px;color:#445;letter-spacing:2px">${msg}</div>
+          ${won?`<div class="result-bonus">+20 PUNTOS</div>`:""}
+          ${(bonus||0)>0?`<div class="result-bonus">🔥 +${bonus} BONUS RACHA</div>`:""}
+          <div class="result-streak">Racha: ${user.streak||0}x</div>
+          <button style="padding:14px 44px;background:linear-gradient(135deg,${uc},#00aaff);border:none;border-radius:50px;color:var(--bg);font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px" onclick="exitGame()">CONTINUAR</button>
+        </div>`;
+    } else renderDuel(document.getElementById('game-body'));
+  },900);
+}
+
+function renderScore(body){
+  const uc=user.color||"#ffb700";
+  body.innerHTML=`
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:13px;color:#445">Partido destacado PRO</div>
+      <div style="font-family:'Orbitron',sans-serif;font-weight:700;font-size:18px;margin-top:4px">España vs Brasil</div>
+    </div>
+    <div class="score-pred">
+      <div class="score-team"><div class="score-flag">🇪🇸</div><input type="number" class="score-input" id="score-home" style="border-color:${uc}44" placeholder="0" min="0" max="20"/></div>
+      <div class="vs-label">VS</div>
+      <div class="score-team"><div class="score-flag">🇧🇷</div><input type="number" class="score-input" id="score-away" style="border-color:${uc}44" placeholder="0" min="0" max="20"/></div>
+    </div>
+    <button style="width:100%;padding:16px;background:linear-gradient(135deg,${uc},#00aaff);border:none;border-radius:12px;color:var(--bg);font-family:'Orbitron',sans-serif;font-weight:700;font-size:14px" onclick="submitScore()">CONFIRMAR PREDICCIÓN</button>
+  `;
+}
+async function submitScore(){
+  if(!document.getElementById('score-home').value||!document.getElementById('score-away').value){showToast("¡Ingresa ambos marcadores!");return;}
+  const pts=Math.random()>.5?10:0;
+  const bonus=await addPoints(pts);
+  await saveUser({...user,streak:pts>0?(user.streak||0)+1:user.streak||0});
+  showResult(pts,bonus,pts>0?"¡Predicción correcta!":"Sin puntos","");
+}
+
+function showResult(pts,bonus,label,sub){
+  const uc=user.color||"#ffb700";
+  const icon=pts>0?"🎯":"😤";
+  document.getElementById('game-body').innerHTML=`
+    <div class="result-screen">
+      <div class="result-icon">${icon}</div>
+      <div class="result-pts" style="color:${pts>0?uc:"var(--text)"}">+${pts}</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#445;letter-spacing:2px;margin-bottom:4px">${label}</div>
+      ${(bonus||0)>0?`<div class="result-bonus">🔥 +${bonus} BONUS RACHA</div>`:""}
+      <div class="result-sub">${sub}</div>
+      <div class="result-streak">Racha: ${user.streak||0}x ${(user.streak||0)>0?"🔥":""}</div>
+      <button style="padding:14px 44px;background:linear-gradient(135deg,${uc},#00aaff);border:none;border-radius:50px;color:var(--bg);font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px" onclick="exitGame()">CONTINUAR</button>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════
+//  OVERLAYS
+// ══════════════════════════════════════════════════
+function showLevelUp(level){
+  const lc=LEVEL_COLORS[level];
+  const card=document.getElementById('levelup-card');
+  card.style.border=`3px solid ${lc}`;
+  card.style.boxShadow=`0 0 80px ${lc}88`;
+  document.getElementById('levelup-name').textContent=level;
+  document.getElementById('levelup-name').style.color=lc;
+  document.getElementById('levelup-overlay').classList.add('show');
+  spawnConfetti();
+}
+function hideLevelUp(){document.getElementById('levelup-overlay').classList.remove('show');}
+
+function spawnConfetti(){
+  const c=document.getElementById('confetti');
+  c.innerHTML="";c.classList.add('show');
+  const cols=["#ffb700","#00ff88","#00aaff","#ff4488","#cc44ff","#ffffff"];
+  for(let i=0;i<40;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    const size=5+Math.random()*10;
+    const shape=Math.random()>.5?"50%":"2px";
+    el.style.cssText=`left:${Math.random()*100}%;width:${size}px;height:${size}px;background:${cols[Math.floor(Math.random()*6)]};border-radius:${shape};animation:confetti-fall ${2+Math.random()*2.5}s ${Math.random()*1.5}s ease-in forwards`;
+    c.appendChild(el);
+  }
+  setTimeout(()=>{c.innerHTML="";c.classList.remove('show');},6000);
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ══════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════
+async function init(){
+  const saved=await sGet("rde_pro_me",false);
+  if(saved&&saved.name){
+    user=saved;
+    showScreen('main');
+    loadRanking();
+    rankingInterval=setInterval(loadRanking,15000);
+    updateAllUI();
+  }
+  buildRegisterUI();
+}
+init();
+</script>
+</body>
+</html>
